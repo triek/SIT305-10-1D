@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 class ProfileActivity : ComponentActivity() {
     private lateinit var totalAttemptsText: TextView
@@ -33,7 +32,7 @@ class ProfileActivity : ComponentActivity() {
         }
 
         findViewById<Button>(R.id.profileShareButton).setOnClickListener {
-            shareProfile()
+            startActivity(Intent(this, ShareProfileActivity::class.java))
         }
 
         findViewById<Button>(R.id.profileUpgradeButton).setOnClickListener {
@@ -63,60 +62,23 @@ class ProfileActivity : ComponentActivity() {
     private fun loadLearningStatistics() {
         lifecycleScope.launch {
             val attempts = HistoryRepository(applicationContext).getAllAttempts()
-            val totalAttempts = attempts.size
-            val correctAnswers = attempts.count { it.isCorrect }
-            val incorrectAnswers = totalAttempts - correctAnswers
-            val accuracy = if (totalAttempts == 0) {
-                0
-            } else {
-                ((correctAnswers.toDouble() / totalAttempts) * 100).roundToInt()
-            }
-            val accountLevel = calculateAccountLevel(totalAttempts, accuracy)
+            val summary = ShareProfileBuilder.buildSummary(AppData.studentProfile, attempts)
 
-            totalAttemptsText.text = totalAttempts.toString()
-            correctAnswersText.text = correctAnswers.toString()
-            incorrectAnswersText.text = incorrectAnswers.toString()
-            accuracyText.text = "$accuracy%"
-            accountLevelText.text = accountLevel
-            progressSummaryText.text = buildProgressSummary(totalAttempts, correctAnswers, incorrectAnswers, accuracy, accountLevel)
+            totalAttemptsText.text = summary.totalAttempts.toString()
+            correctAnswersText.text = summary.correctAnswers.toString()
+            incorrectAnswersText.text = summary.incorrectAnswers.toString()
+            accuracyText.text = "${summary.accuracyPercentage}%"
+            accountLevelText.text = summary.accountLevel
+            progressSummaryText.text = buildProgressSummary(summary)
         }
     }
 
-    private fun calculateAccountLevel(totalAttempts: Int, accuracy: Int): String {
-        return when {
-            totalAttempts == 0 -> "Starter"
-            totalAttempts >= 12 && accuracy >= 85 -> "Advanced"
-            totalAttempts >= 8 && accuracy >= 70 -> "Proficient"
-            totalAttempts >= 4 -> "Developing"
-            else -> "Explorer"
-        }
+    private fun buildProgressSummary(summary: PublicProfileSummary): String {
+        return "Level: ${summary.accountLevel}\n" +
+            "Attempts: ${summary.totalAttempts}\n" +
+            "Correct: ${summary.correctAnswers}\n" +
+            "Needs review: ${summary.incorrectAnswers}\n" +
+            "Accuracy: ${summary.accuracyPercentage}%"
     }
 
-    private fun buildProgressSummary(
-        totalAttempts: Int,
-        correctAnswers: Int,
-        incorrectAnswers: Int,
-        accuracy: Int,
-        accountLevel: String
-    ): String {
-        return "Level: $accountLevel\n" +
-            "Attempts: $totalAttempts\n" +
-            "Correct: $correctAnswers\n" +
-            "Needs review: $incorrectAnswers\n" +
-            "Accuracy: $accuracy%"
-    }
-
-    private fun shareProfile() {
-        val shareText = buildString {
-            appendLine("${AppData.studentProfile.name}'s Learning Profile")
-            appendLine(progressSummaryText.text)
-            appendLine("Interests: ${AppData.studentProfile.selectedInterests.joinToString()}")
-        }
-        val sendIntent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_SUBJECT, "Learning Profile")
-            putExtra(Intent.EXTRA_TEXT, shareText)
-        }
-        startActivity(Intent.createChooser(sendIntent, "Share Profile"))
-    }
 }
