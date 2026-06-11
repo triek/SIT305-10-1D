@@ -6,7 +6,9 @@ import android.widget.Button as AndroidButton
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -72,7 +74,43 @@ class GeneratedTaskActivity : ComponentActivity() {
         }
 
         findViewById<AndroidButton>(R.id.submitTaskButton).setOnClickListener {
-            startActivity(Intent(this, ResultsActivity::class.java))
+            val selectedAnswerId = answerGroup.checkedRadioButtonId
+            val userAnswer = if (selectedAnswerId == -1) {
+                ""
+            } else {
+                answerGroup.findViewById<RadioButton>(selectedAnswerId)
+                    ?.text
+                    ?.toString()
+                    .orEmpty()
+            }
+
+            if (userAnswer.isBlank()) {
+                Toast.makeText(this, "Please select an answer before submitting.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val correctAnswer = task.options.first()
+            val isCorrect = userAnswer == correctAnswer
+            val feedback = if (isCorrect) {
+                task.resultSummary
+            } else {
+                "Review the correct answer: $correctAnswer. ${task.resultSummary}"
+            }
+
+            lifecycleScope.launch {
+                HistoryRepository(applicationContext).saveAttempt(
+                    HistoryEntity(
+                        topic = task.title,
+                        generatedQuestion = task.question,
+                        userAnswer = userAnswer,
+                        correctAnswer = correctAnswer,
+                        geminiFeedback = feedback,
+                        isCorrect = isCorrect,
+                        createdAt = System.currentTimeMillis()
+                    )
+                )
+                startActivity(Intent(this@GeneratedTaskActivity, ResultsActivity::class.java))
+            }
         }
     }
 }
