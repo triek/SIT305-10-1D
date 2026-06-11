@@ -1,47 +1,40 @@
 package com.example.a10_1d
 
+import android.content.Intent
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.RelativeSizeSpan
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.a10_1d.ui.theme._101DTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            _101DTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+        setContentView(R.layout.activity_login)
+
+        val welcomeMessage = "Welcome,\nStudent!\nLets Start Learning!"
+        findViewById<TextView>(R.id.welcomeText).text = SpannableString(welcomeMessage).apply {
+            val studentStart = welcomeMessage.indexOf("Student!")
+            setSpan(
+                RelativeSizeSpan(2f),
+                studentStart,
+                studentStart + "Student!".length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
-    }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+        findViewById<Button>(R.id.loginButton).setOnClickListener {
+            val typedName = findViewById<EditText>(R.id.usernameInput).text.toString().trim()
+            AppData.currentStudentName = typedName.ifBlank { AppData.studentProfile.name }
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+        }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    _101DTheme {
-        Greeting("Android")
+        findViewById<TextView>(R.id.createAccountLink).setOnClickListener {
+            startActivity(Intent(this, AccountSetupActivity::class.java))
+        }
     }
 }
