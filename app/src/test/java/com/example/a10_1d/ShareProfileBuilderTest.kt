@@ -30,7 +30,7 @@ class ShareProfileBuilderTest {
         assertEquals(1, summary.incorrectAnswers)
         assertEquals(67, summary.accuracyPercentage)
         assertTrue(shareText.contains("Selected topics: Algorithms, Testing"))
-        assertTrue(shareText.contains("Account level: Explorer"))
+        assertTrue(shareText.contains("Account level: Basic"))
         assertFalse(shareText.contains(profile.email))
         assertFalse(shareText.contains(profile.phone))
         assertFalse(shareText.contains("password", ignoreCase = true))

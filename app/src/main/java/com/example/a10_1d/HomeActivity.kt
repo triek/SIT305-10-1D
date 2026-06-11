@@ -16,12 +16,15 @@ class HomeActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        AppData.loadAccountLevel(applicationContext)
         val task = AppData.currentTask()
+        val plan = AppData.currentAccountPlan
         findViewById<TextView>(R.id.homeGreetingText).text = "Hello,\n${AppData.currentStudentName}"
         findViewById<TextView>(R.id.taskTitleText).text = task.title
         findViewById<TextView>(R.id.taskDescriptionText).text = task.description
-        findViewById<TextView>(R.id.notificationText).text = "You have 1 task due today"
-        findViewById<TextView>(R.id.interestsSummaryText).text = "Interests: ${AppData.studentProfile.selectedInterests.joinToString()}"
+        findViewById<TextView>(R.id.notificationText).text = "${plan.name} plan • You have 1 task due today"
+        findViewById<TextView>(R.id.interestsSummaryText).text =
+            "${plan.name} plan • Interests: ${AppData.studentProfile.selectedInterests.joinToString()}"
 
         findViewById<ImageButton>(R.id.openTaskButton).setOnClickListener {
             startActivity(Intent(this, GeneratedTaskActivity::class.java))

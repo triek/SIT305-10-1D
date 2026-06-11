@@ -26,7 +26,7 @@ object ShareProfileBuilder {
             correctAnswers = correctAnswers,
             incorrectAnswers = incorrectAnswers,
             accuracyPercentage = accuracyPercentage,
-            accountLevel = calculateAccountLevel(totalAttempts, accuracyPercentage)
+            accountLevel = AppData.currentAccountPlan.name
         )
     }
 
@@ -53,11 +53,9 @@ object ShareProfileBuilder {
 
     fun calculateAccountLevel(totalAttempts: Int, accuracyPercentage: Int): String {
         return when {
-            totalAttempts == 0 -> "Starter"
-            totalAttempts >= 12 && accuracyPercentage >= 85 -> "Advanced"
-            totalAttempts >= 8 && accuracyPercentage >= 70 -> "Proficient"
-            totalAttempts >= 4 -> "Developing"
-            else -> "Explorer"
+            totalAttempts >= 12 && accuracyPercentage >= 85 -> AccountLevel.PREMIUM.displayName
+            totalAttempts >= 4 && accuracyPercentage >= 70 -> AccountLevel.PLUS.displayName
+            else -> AccountLevel.BASIC.displayName
         }
     }
 

@@ -42,6 +42,7 @@ class ProfileActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        AppData.loadAccountLevel(applicationContext)
         showAccountInformation()
         loadLearningStatistics()
     }
@@ -68,13 +69,13 @@ class ProfileActivity : ComponentActivity() {
             correctAnswersText.text = summary.correctAnswers.toString()
             incorrectAnswersText.text = summary.incorrectAnswers.toString()
             accuracyText.text = "${summary.accuracyPercentage}%"
-            accountLevelText.text = summary.accountLevel
+            accountLevelText.text = AppData.currentAccountPlan.name
             progressSummaryText.text = buildProgressSummary(summary)
         }
     }
 
     private fun buildProgressSummary(summary: PublicProfileSummary): String {
-        return "Level: ${summary.accountLevel}\n" +
+        return "Plan: ${AppData.currentAccountPlan.name}\n" +
             "Attempts: ${summary.totalAttempts}\n" +
             "Correct: ${summary.correctAnswers}\n" +
             "Needs review: ${summary.incorrectAnswers}\n" +

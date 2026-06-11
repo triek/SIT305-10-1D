@@ -1,5 +1,7 @@
 package com.example.a10_1d
 
+import android.content.Context
+
 data class StudentProfile(
     val name: String,
     val email: String,
@@ -18,7 +20,33 @@ data class SampleTask(
 )
 
 object AppData {
+    private const val ACCOUNT_PREFS = "account_preferences"
+    private const val ACCOUNT_LEVEL_KEY = "selected_account_level"
+
     var currentStudentName = "Alex Johnson"
+    var currentAccountLevel: AccountLevel = AccountLevel.BASIC
+        private set
+
+    val currentAccountPlan: AccountPlan
+        get() = AccountPlans.get(currentAccountLevel)
+
+    fun loadAccountLevel(context: Context) {
+        val storedLevel = context.getSharedPreferences(ACCOUNT_PREFS, Context.MODE_PRIVATE)
+            .getString(ACCOUNT_LEVEL_KEY, AccountLevel.BASIC.name)
+        currentAccountLevel = AccountLevel.fromStoredValue(storedLevel)
+    }
+
+    fun saveAccountLevel(context: Context, level: AccountLevel) {
+        currentAccountLevel = level
+        context.getSharedPreferences(ACCOUNT_PREFS, Context.MODE_PRIVATE)
+            .edit()
+            .putString(ACCOUNT_LEVEL_KEY, level.name)
+            .apply()
+    }
+
+    fun hasPlusAccess(): Boolean = currentAccountLevel == AccountLevel.PLUS || currentAccountLevel == AccountLevel.PREMIUM
+
+    fun hasPremiumAccess(): Boolean = currentAccountLevel == AccountLevel.PREMIUM
 
     val studentProfile = StudentProfile(
         name = "Alex Johnson",
