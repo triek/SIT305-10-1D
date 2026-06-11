@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 
@@ -24,6 +25,14 @@ class HomeActivity : ComponentActivity() {
 
         findViewById<ImageButton>(R.id.openTaskButton).setOnClickListener {
             startActivity(Intent(this, GeneratedTaskActivity::class.java))
+        }
+
+        findViewById<ImageView>(R.id.openProfileImage).setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
+
+        findViewById<Button>(R.id.openProfileButton).setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
 
         findViewById<Button>(R.id.openHistoryButton).setOnClickListener {

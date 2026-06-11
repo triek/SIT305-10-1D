@@ -19,10 +19,12 @@
             android:textSize="34sp"
             android:textStyle="bold" />
         <ImageView
+            android:id="@+id/openProfileImage"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentEnd="true"
             android:background="@drawable/bg_avatar_circle"
+            android:contentDescription="Open profile"
             android:padding="6dp"
             android:src="@drawable/ic_account_circle" />
     </RelativeLayout>
@@ -67,10 +69,22 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/openHistoryButton"
+        android:id="@+id/openProfileButton"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="24dp"
+        android:background="@drawable/bg_green_button"
+        android:text="Open Profile"
+        android:textAllCaps="false"
+        android:textColor="@color/text_black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/openHistoryButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/bg_green_button"
         android:text="View Learning History"
         android:textAllCaps="false"

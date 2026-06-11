@@ -37,4 +37,34 @@
         <item name="android:textColor">@color/text_black</item>
         <item name="android:textSize">15sp</item>
     </style>
+    <style name="ProfileStatCard">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">108dp</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:background">@drawable/bg_blue_card</item>
+        <item name="android:elevation">6dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">14dp</item>
+    </style>
+
+    <style name="ProfileStatValue">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/card_text_white</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ProfileStatLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/card_text_white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>
