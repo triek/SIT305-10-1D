@@ -15,6 +15,7 @@
         android:theme="@style/Theme._101D">
 
         <activity android:name=".UpgradeAccountActivity" />
+        <activity android:name=".ShareProfileActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".HistoryActivity" />
         <activity android:name=".ResultsActivity" />
