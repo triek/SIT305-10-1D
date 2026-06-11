@@ -48,7 +48,7 @@ class HistoryActivity : ComponentActivity() {
         })
 
         root.addView(TextView(this).apply {
-            text = "Review your completed quiz attempts and Gemini feedback."
+            text = "Review your completed quiz attempts and Gemini feedback. Premium unlocks extended history access."
             setTextColor(getColor(R.color.text_black))
             textSize = 16f
             setPadding(0, 8.dp(), 0, 20.dp())
@@ -72,14 +72,36 @@ class HistoryActivity : ComponentActivity() {
     }
 
     private fun loadHistory() {
+        AppData.loadAccountLevel(applicationContext)
         lifecycleScope.launch {
             val attempts = HistoryRepository(applicationContext).getAllAttempts()
+            val visibleAttempts = if (AppData.hasPremiumAccess()) attempts else attempts.take(BASIC_HISTORY_LIMIT)
             historyListContainer.removeAllViews()
             emptyHistoryText.visibility = if (attempts.isEmpty()) View.VISIBLE else View.GONE
-            attempts.forEach { attempt ->
+
+            if (attempts.isNotEmpty()) {
+                historyListContainer.addView(createPlanNoticeView(attempts.size, visibleAttempts.size))
+            }
+
+            visibleAttempts.forEach { attempt ->
                 historyListContainer.addView(createHistoryItemView(attempt))
             }
         }
+    }
+
+    private fun createPlanNoticeView(totalAttempts: Int, visibleAttempts: Int): View {
+        val notice = TextView(this).apply {
+            val planName = AppData.currentAccountPlan.name
+            text = if (AppData.hasPremiumAccess()) {
+                "$planName plan: extended history enabled. Showing all $totalAttempts attempts."
+            } else {
+                "$planName plan: showing latest $visibleAttempts of $totalAttempts attempts. Upgrade to Premium for extended history access."
+            }
+            setTextColor(getColor(R.color.text_black))
+            textSize = 15f
+            setPadding(0, 0, 0, 14.dp())
+        }
+        return notice
     }
 
     private fun createHistoryItemView(attempt: HistoryEntity): View {
@@ -158,4 +180,8 @@ class HistoryActivity : ComponentActivity() {
     }
 
     private fun Int.dp(): Int = (this * resources.displayMetrics.density).toInt()
+
+    private companion object {
+        const val BASIC_HISTORY_LIMIT = 3
+    }
 }

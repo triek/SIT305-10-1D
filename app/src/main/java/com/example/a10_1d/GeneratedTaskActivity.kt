@@ -44,6 +44,7 @@ class GeneratedTaskActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_generated_task)
 
+        AppData.loadAccountLevel(applicationContext)
         val task = AppData.currentTask()
         findViewById<TextView>(R.id.generatedTaskTitleText).text = task.title
         findViewById<TextView>(R.id.generatedTaskDescriptionText).text = task.description
@@ -58,6 +59,7 @@ class GeneratedTaskActivity : ComponentActivity() {
             SIT30561DTheme {
                 AiLearningUtilities(
                     task = task,
+                    accountPlan = AppData.currentAccountPlan,
                     selectedAnswerProvider = {
                         val selectedAnswerId = answerGroup.checkedRadioButtonId
                         if (selectedAnswerId == -1) {
@@ -118,6 +120,7 @@ class GeneratedTaskActivity : ComponentActivity() {
 @Composable
 private fun AiLearningUtilities(
     task: SampleTask,
+    accountPlan: AccountPlan,
     selectedAnswerProvider: () -> String
 ) {
     var promptText by remember { mutableStateOf("Tap an AI learning help button to preview the prompt.") }
@@ -126,7 +129,16 @@ private fun AiLearningUtilities(
     var errorMessage by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
 
-    fun runGeminiPrompt(prompt: String) {
+    fun runGeminiPrompt(prompt: String, requiredLevel: AccountLevel = AccountLevel.PLUS) {
+        if (!hasFeatureAccess(accountPlan.level, requiredLevel)) {
+            val requiredPlanName = AccountPlans.get(requiredLevel).name
+            promptText = "Upgrade required"
+            aiResponseText = "$requiredPlanName access is required for this feature. Current plan: ${accountPlan.name}."
+            errorMessage = "Open Upgrade Account from your profile to unlock this tool."
+            isLoading = false
+            return
+        }
+
         promptText = prompt
         aiResponseText = ""
         errorMessage = ""
@@ -159,7 +171,7 @@ private fun AiLearningUtilities(
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "Use Gemini to get quick help for this task.",
+                text = "Current plan: ${accountPlan.name}. Gemini help requires Plus; study plans require Premium.",
                 color = colorResource(id = R.color.card_text_white),
                 fontSize = 14.sp
             )
@@ -203,6 +215,20 @@ private fun AiLearningUtilities(
                             studentInterests = studentInterestsText(),
                             learningHistory = learningHistoryText()
                         )
+                    )
+                }
+            )
+            AiActionButton(
+                text = "Generate Study Plan",
+                isLoading = isLoading,
+                onClick = {
+                    runGeminiPrompt(
+                        LearningPromptBuilder.buildStudyPlanPrompt(
+                            topic = task.title,
+                            studentInterests = studentInterestsText(),
+                            learningHistory = learningHistoryText()
+                        ),
+                        requiredLevel = AccountLevel.PREMIUM
                     )
                 }
             )
@@ -289,4 +315,8 @@ private fun Throwable.toReadableMessage(): String = when (this) {
     is IllegalStateException -> message ?: "Gemini is not configured yet. Please check the API key."
     is IOException -> "Could not reach Gemini. Please check your internet connection and try again."
     else -> "Gemini request failed: ${message ?: "Please try again."}"
+}
+
+private fun hasFeatureAccess(currentLevel: AccountLevel, requiredLevel: AccountLevel): Boolean {
+    return currentLevel.ordinal >= requiredLevel.ordinal
 }
