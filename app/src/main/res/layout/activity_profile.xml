@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="28dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:text="Profile"
+            android:textColor="@color/text_black"
+            android:textSize="34sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Your progress and account status"
+            android:textColor="@color/text_black"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_blue_card"
+            android:elevation="8dp"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/profileNameText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Alex Johnson"
+                android:textColor="@color/card_text_white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/profileEmailText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="alex.johnson@student.deakin.edu.au"
+                android:textColor="@color/card_text_white"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/profilePhoneText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="+61 400 123 456"
+                android:textColor="@color/card_text_white"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="Selected learning interests"
+                android:textColor="@color/card_text_white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/profileInterestsText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Algorithms • Data Structures"
+                android:textColor="@color/card_text_white"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Learning statistics"
+            android:textColor="@color/text_black"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:columnCount="2">
+
+            <LinearLayout style="@style/ProfileStatCard">
+                <TextView style="@style/ProfileStatValue" android:id="@+id/totalAttemptsText" android:text="0" />
+                <TextView style="@style/ProfileStatLabel" android:text="Total attempts" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/ProfileStatCard">
+                <TextView style="@style/ProfileStatValue" android:id="@+id/correctAnswersText" android:text="0" />
+                <TextView style="@style/ProfileStatLabel" android:text="Correct answers" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/ProfileStatCard">
+                <TextView style="@style/ProfileStatValue" android:id="@+id/incorrectAnswersText" android:text="0" />
+                <TextView style="@style/ProfileStatLabel" android:text="Needs review" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/ProfileStatCard">
+                <TextView style="@style/ProfileStatValue" android:id="@+id/accuracyText" android:text="0%" />
+                <TextView style="@style/ProfileStatLabel" android:text="Accuracy" />
+            </LinearLayout>
+        </GridLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_notification"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Current account level"
+                android:textColor="@color/text_black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/accountLevelText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Starter"
+                android:textColor="@color/text_black"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/progressSummaryText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Level: Starter\nAttempts: 0\nCorrect: 0\nNeeds review: 0\nAccuracy: 0%"
+                android:textColor="@color/text_black"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/profileHistoryButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_green_button"
+            android:text="History"
+            android:textAllCaps="false"
+            android:textColor="@color/text_black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/profileShareButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_green_button"
+            android:text="Share Profile"
+            android:textAllCaps="false"
+            android:textColor="@color/text_black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/profileUpgradeButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_green_button"
+            android:text="Upgrade Account"
+            android:textAllCaps="false"
+            android:textColor="@color/text_black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</ScrollView>
