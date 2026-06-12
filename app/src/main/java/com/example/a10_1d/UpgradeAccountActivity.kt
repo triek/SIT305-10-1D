@@ -3,6 +3,7 @@ package com.example.a10_1d
 import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
+import android.app.AlertDialog
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -76,15 +77,49 @@ class UpgradeAccountActivity : ComponentActivity() {
                 setBackgroundResource(R.drawable.bg_green_button)
                 gravity = Gravity.CENTER
                 setOnClickListener {
-                    AppData.saveAccountLevel(applicationContext, plan.level)
-                    Toast.makeText(
-                        this@UpgradeAccountActivity,
-                        "${plan.name} plan selected",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    renderAccountPlans()
+                    if (plan.level == AccountLevel.BASIC) {
+                        AppData.saveAccountLevel(applicationContext, plan.level)
+                        Toast.makeText(
+                            this@UpgradeAccountActivity,
+                            "${plan.name} plan selected",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        renderAccountPlans()
+                    } else {
+                        showPaymentConfirmation(plan)
+                    }
                 }
             })
+        }
+    }
+
+    private fun showPaymentConfirmation(plan: AccountPlan) {
+        val planSummary = buildString {
+            appendLine("Selected plan: ${plan.name}")
+            appendLine("Price: ${plan.price}")
+            appendLine()
+            appendLine("Features:")
+            plan.includedFeatures.forEach { feature -> appendLine("• $feature") }
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Mock Google Pay")
+            .setMessage(planSummary)
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Confirm payment") { _, _ ->
+                handleMockPayment(plan)
+            }
+            .show()
+    }
+
+    private fun handleMockPayment(plan: AccountPlan) {
+        val paymentResult = PaymentManager.processMockGooglePayPayment(plan)
+        Toast.makeText(this, paymentResult.message, Toast.LENGTH_SHORT).show()
+
+        if (paymentResult.isSuccessful) {
+            AppData.accountLevel = plan.name
+            AppData.saveAccountLevel(applicationContext, AppData.accountLevel)
+            renderAccountPlans()
         }
     }
 

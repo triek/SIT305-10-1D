@@ -27,20 +27,30 @@ object AppData {
     var currentAccountLevel: AccountLevel = AccountLevel.BASIC
         private set
 
+    var accountLevel: String = currentAccountLevel.name
+        set(value) {
+            field = value
+            currentAccountLevel = AccountLevel.fromStoredValue(value)
+        }
+
     val currentAccountPlan: AccountPlan
         get() = AccountPlans.get(currentAccountLevel)
 
     fun loadAccountLevel(context: Context) {
         val storedLevel = context.getSharedPreferences(ACCOUNT_PREFS, Context.MODE_PRIVATE)
             .getString(ACCOUNT_LEVEL_KEY, AccountLevel.BASIC.name)
-        currentAccountLevel = AccountLevel.fromStoredValue(storedLevel)
+        accountLevel = storedLevel ?: AccountLevel.BASIC.name
     }
 
     fun saveAccountLevel(context: Context, level: AccountLevel) {
-        currentAccountLevel = level
+        saveAccountLevel(context, level.name)
+    }
+
+    fun saveAccountLevel(context: Context, levelName: String) {
+        accountLevel = levelName
         context.getSharedPreferences(ACCOUNT_PREFS, Context.MODE_PRIVATE)
             .edit()
-            .putString(ACCOUNT_LEVEL_KEY, level.name)
+            .putString(ACCOUNT_LEVEL_KEY, currentAccountLevel.name)
             .apply()
     }
 
